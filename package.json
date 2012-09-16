@@ -1,0 +1,27 @@
+{
+  "name": "pullable",
+  "description": "Pullable serves git repositories in read only mode over http.",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tellnes/pullable.git"
+  },
+  "author": "Christian Tellnes",
+  "license": "MIT",
+  "dependencies": {
+    "track": "0.0.4",
+    "debug": "~0.7.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "git",
+    "http",
+    "pull",
+    "fetch",
+    "clone"
+  ]
+}
