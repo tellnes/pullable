@@ -86,9 +86,28 @@ function Pullable() {
 exports.Pullable = Pullable
 util.inherits(Pullable, events.EventEmitter)
 
-Pullable.prototype.middleware = function() {
+function handle(cut, handler, req, res, next) {
+  var originalUrl = req.url
+  req.url = req.url.slice(cut)
+  handler.handle(req, res, function (err) {
+    req.url = originalUrl
+    next(err)
+  })
+}
+
+Pullable.prototype.middleware = function (options) {
+  options = options || {}
   var self = this
-  return function(req, res, next) {
+    , url = options.url || '/'
+
+  if (url[url.length - 1] !== '/') url += '/'
+
+  return function (req, res, next) {
+    if (url) {
+      if (req.url.slice(0, url.length) !== url) return next()
+      handle(url.length - 1, self, req, res, next)
+      return
+    }
     self.handle(req, res, next)
   }
 }
@@ -101,12 +120,10 @@ Pullable.prototype.handle = function(req, res, next) {
 
   if (!this.repos[reponame]) return
 
-  var originalUrl = req.url
-  req.url = req.url.slice(reponame.length + 1)
-  this.repos[reponame].handle(req, res, function(err) {
-    req.url = originalUrl
-    next(err)
-  })
+  handle( reponame.length + 1
+        , this.repos[reponame]
+        , req, res, next
+        )
 }
 
 Pullable.prototype.listen = function() {
